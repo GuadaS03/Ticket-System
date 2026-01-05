@@ -1,15 +1,17 @@
 import os
 
-# ... resto del código ...
-
 class Config:
-    SECRET_KEY = os.environ.get('SECRET_KEY') or 'tu_clave_secreta'
+    # 1. Clave Secreta (Usa la de Render, o una por defecto si estás en tu PC)
+    SECRET_KEY = os.environ.get('SECRET_KEY') or 'clave_super_secreta_123'
     
-    # ESTA ES LA LÍNEA MÁGICA:
-    # Busca la variable 'DATABASE_URL' (la de Render). 
-    # Si no la encuentra, usa 'sqlite:///site.db' (tu PC).
-    SQLALCHEMY_DATABASE_URI = os.environ.get('DATABASE_URL')
+    # 2. Lógica inteligente para la Base de Datos
+    uri = os.environ.get('DATABASE_URL')
     
-    # Parche para Render (a veces la URL empieza con postgres:// y debe ser postgresql://)
-    if SQLALCHEMY_DATABASE_URI and SQLALCHEMY_DATABASE_URI.startswith("postgres://"):
-        SQLALCHEMY_DATABASE_URI = SQLALCHEMY_DATABASE_URI.replace("postgres://", "postgresql://", 1)
+    # Si existe la variable en Render, arreglamos el prefijo si es necesario
+    if uri and uri.startswith("postgres://"):
+        uri = uri.replace("postgres://", "postgresql://", 1)
+        
+    # Si 'uri' sigue vacía (estás en tu PC), usamos SQLite. Si tiene algo, usamos eso.
+    SQLALCHEMY_DATABASE_URI = uri or 'sqlite:///site.db'
+    
+    SQLALCHEMY_TRACK_MODIFICATIONS = False
