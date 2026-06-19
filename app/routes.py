@@ -48,7 +48,11 @@ def create_ticket():
         return redirect(url_for('main.index'))
     return render_template('create_ticket.html', title='Nuevo Ticket', form=form)
 
+<<<<<<< HEAD
 # --- ESTA ES LA ÚNICA VERSIÓN QUE DEBE EXISTIR DE TICKET_DETAIL ---
+=======
+
+>>>>>>> b48f08f (Reparo repositorio y actualizo configuración)
 @main.route('/ticket/<int:ticket_id>', methods=['GET', 'POST'])
 @login_required
 def ticket_detail(ticket_id):

@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 from app import create_app, db
 from app.models import User
 
@@ -17,14 +18,41 @@ with app.app_context():
     print("✅ Tablas listas.")
 
     # Crear el usuario
+=======
+import os
+
+from app import create_app, db
+from app.models import User
+
+app = create_app()
+
+db_url = os.environ.get('DATABASE_URL')
+app.config['SQLALCHEMY_DATABASE_URI'] = db_url
+
+with app.app_context():
+    print("--- CONECTANDO A LA NUBE ---")
+    
+  
+    print("1. Creando tablas...")
+    db.create_all()
+    print("Tablas listas.")
+
+    
+>>>>>>> b48f08f (Reparo repositorio y actualizo configuración)
     print("2. Verificando usuario Admin...")
     if not User.query.filter_by(username='admin').first():
         u = User(username='admin', email='admin@helpdesk.com', role='admin')
         u.set_password('123456')
         db.session.add(u)
         db.session.commit()
+<<<<<<< HEAD
         print("✅ ¡USUARIO ADMIN CREADO EN LA NUBE!")
     else:
         print("ℹ️ El usuario admin ya existía en la nube.")
+=======
+        print("¡USUARIO ADMIN CREADO EN LA NUBE!")
+    else:
+        print("ℹEl usuario admin ya existía en la nube.")
+>>>>>>> b48f08f (Reparo repositorio y actualizo configuración)
 
     print("--- FIN DEL PROCESO ---")
