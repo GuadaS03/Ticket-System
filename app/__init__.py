@@ -1,18 +1,17 @@
 from flask import Flask
 from flask_sqlalchemy import SQLAlchemy
-from flask_login import LoginManager # <--- Importamos esto
-from config import Config
+from flask_login import LoginManager 
 
 db = SQLAlchemy()
-login = LoginManager() # <--- Inicializamos el objeto
-login.login_view = 'main.login' # <--- A dónde te mando si no estás logueado
+login = LoginManager()
+login.login_view = 'main.login' 
 
 def create_app(config_class=Config):
     app = Flask(__name__)
     app.config.from_object(config_class)
 
     db.init_app(app)
-    login.init_app(app) # <--- Conectamos el portero a la app
+    login.init_app(app) 
 
     from app.routes import main
     app.register_blueprint(main)
