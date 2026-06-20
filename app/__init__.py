@@ -20,6 +20,18 @@ def create_app(config_class=Config):
 
     with app.app_context():
         from app import models
-        db.create_all()
+        from app.models import User
+        
+        db.create_all() 
+        
+        if not User.query.filter_by(username='admin').first():
+            print("Creando usuario admin...")
+            u = User(username='admin', email='admin@helpdesk.com', role='admin')
+            u.set_password('123456')
+            db.session.add(u)
+            db.session.commit()
+            print("Usuario admin creado.")
+        else:
+            print("El usuario admin ya existe.")
 
     return app
