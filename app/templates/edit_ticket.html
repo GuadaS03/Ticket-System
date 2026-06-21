@@ -1,0 +1,55 @@
+{% extends "base.html" %}
+{% block content %}
+<div class="container mt-4">
+    <div class="row justify-content-center">
+        <div class="col-md-8">
+            <div class="card shadow-sm border-0">
+                <div class="card-header bg-primary text-white py-3">
+                    <h4 class="mb-0">Editar Ticket #{{ ticket.id }}: {{ ticket.title }}</h4>
+                </div>
+                
+                <div class="card-body p-4">
+                    <form method="POST" action="">
+                        {{ form.hidden_tag() }}
+                        
+                        <div class="row mb-3">
+                            <div class="col-md-6">
+                                {{ form.status.label(class="form-label fw-bold") }}
+                                {{ form.status(class="form-select") }}
+                            </div>
+                            <div class="col-md-6">
+                                {{ form.priority.label(class="form-label fw-bold") }}
+                                {{ form.priority(class="form-select") }}
+                            </div>
+                        </div>
+
+                        <div class="mb-3">
+                            {{ form.assigned_to.label(class="form-label fw-bold") }}
+                            {{ form.assigned_to(class="form-select") }}
+                        </div>
+
+                        <div class="mb-3">
+                            {{ form.resolution_notes.label(class="form-label fw-bold") }}
+                            {{ form.resolution_notes(class="form-control", rows="4", placeholder="Describí los pasos técnicos que se realizaron para solucionar el problema...") }}
+                        </div>
+
+                        <div class="mb-4">
+                            {{ form.cost.label(class="form-label fw-bold") }}
+                            <div class="input-group">
+                                <span class="input-group-text">$</span>
+                                {{ form.cost(class="form-control", placeholder="0.00") }}
+                            </div>
+                            <small class="text-muted">Registrá el costo total si se necesitaron repuestos, hardware nuevo o soporte externo.</small>
+                        </div>
+
+                        <div class="d-grid gap-2">
+                            {{ form.submit(class="btn btn-success py-2 fw-bold") }}
+                            <a href="{{ url_for('main.ticket_detail', ticket_id=ticket.id) }}" class="btn btn-outline-secondary py-2">Cancelar</a>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock content %}

@@ -25,7 +25,7 @@ with app.app_context():
         u.set_password('123456')
         db.session.add(u)
         db.session.commit()
-        print("¡USUARIO ADMIN CREADO EN LA NUBE!")
+        print("USUARIO ADMIN CREADO EN LA NUBE")
     else:
         print("ℹ El usuario admin ya existía en la nube.")
 

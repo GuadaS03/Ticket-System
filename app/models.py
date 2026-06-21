@@ -15,7 +15,7 @@ class User(UserMixin, db.Model):
     
     # Relación: Un usuario puede tener muchos tickets
     # backref permite acceder al usuario desde el ticket (ticket.author)
-    tickets = db.relationship('Ticket', backref='author', lazy='dynamic')
+    # tickets = db.relationship('Ticket', backref='author', lazy='dynamic')
 
     def set_password(self, password):
         self.password_hash = generate_password_hash(password)
@@ -33,15 +33,22 @@ class Ticket(db.Model):
     description = db.Column(db.Text, nullable=False)
     # Estados: 'Abierto', 'En Progreso', 'Cerrado'
     status = db.Column(db.String(20), default='Abierto')
-    priority = db.Column(db.String(20), default='Media')
+    priority = db.Column(db.String(20), default='Baja')
     created_at = db.Column(db.DateTime, index=True, default=datetime.utcnow)
     comments = db.relationship('Comment', backref='ticket', lazy='dynamic')
     
     # Clave Foránea: Aquí vinculamos con la tabla User
     user_id = db.Column(db.Integer, db.ForeignKey('user.id'))
+    assigned_to_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=True)
+    resolution_notes = db.Column(db.Text, nullable=True)
+    cost = db.Column(db.Float, nullable=True, default=0.0)
+    closed_at = db.Column(db.DateTime, nullable=True)
+    author = db.relationship('User', foreign_keys=[user_id], backref='tickets', lazy=True)
+    assigned_tech = db.relationship('User', foreign_keys=[assigned_to_id], backref='assigned_tickets', lazy=True)
+
 
     def __repr__(self):
-        return f'<Ticket {self.title}>'
+        return f"Ticket('{self.title}', '{self.status}', '{self.priority}')"
     
 
 @login.user_loader

@@ -2,7 +2,8 @@ from flask import Blueprint, render_template, flash, redirect, url_for, abort, r
 from flask_login import current_user, login_user, logout_user, login_required
 from app import db
 from app.models import User, Ticket, Comment
-from app.forms import LoginForm, TicketForm, CommentForm
+from app.forms import LoginForm, TicketForm, CommentForm, EditTicketForm
+from datetime import datetime
 
 main = Blueprint('main', __name__)
 
@@ -82,3 +83,40 @@ def ticket_detail(ticket_id):
                            ticket=ticket, 
                            form=form, 
                            comments=comments)
+
+@main.route('/ticket/<int:ticket_id>/edit', methods=['GET', 'POST'])
+@login_required
+def edit_ticket(ticket_id):
+    ticket = Ticket.query.get_or_404(ticket_id)
+    
+    if current_user.role != 'admin':
+        abort(403)
+        
+    form = EditTicketForm()
+    techs = User.query.filter_by(role='admin').all() 
+    form.assigned_to.choices = [(0, 'Sin asignar')] + [(t.id, t.username) for t in techs]
+
+    if form.validate_on_submit():
+        ticket.status = form.status.data
+        ticket.priority = form.priority.data
+        ticket.assigned_to_id = form.assigned_to.data if form.assigned_to.data != 0 else None
+        ticket.resolution_notes = form.resolution_notes.data
+        ticket.cost = form.cost.data
+        
+        if ticket.status == 'Cerrado' and ticket.closed_at is None:
+            ticket.closed_at = datetime.utcnow()
+        elif ticket.status != 'Cerrado':
+            ticket.closed_at = None
+            
+        db.session.commit()
+        flash('¡Ticket actualizado correctamente!')
+        return redirect(url_for('main.ticket_detail', ticket_id=ticket.id))
+    
+    elif request.method == 'GET':
+        form.status.data = ticket.status
+        form.priority.data = ticket.priority
+        form.assigned_to.data = ticket.assigned_to_id or 0
+        form.resolution_notes.data = ticket.resolution_notes
+        form.cost.data = ticket.cost
+        
+    return render_template('edit_ticket.html', title='Editar Ticket', form=form, ticket=ticket)

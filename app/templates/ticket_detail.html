@@ -49,8 +49,16 @@
         </form>
         {% endif %}
         
-        <div class="mt-3">
-            <a href="{{ url_for('main.index') }}" class="btn btn-outline-secondary">Volver al Dashboard</a>
+        <div class="mt-4 d-flex gap-2">
+            <a href="{{ url_for('main.index') }}" class="btn btn-outline-secondary">
+                <i class="bi bi-arrow-left"></i> Volver al Dashboard
+            </a>
+            
+            {% if current_user.role == 'admin' %}
+            <a href="{{ url_for('main.edit_ticket', ticket_id=ticket.id) }}" class="btn btn-warning fw-bold text-dark shadow-sm">
+                Gestionar / Editar Ticket
+            </a>
+            {% endif %}
         </div>
     </div>
 </div>
